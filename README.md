@@ -1,1 +1,1 @@
-# live-training-containers-20190904
+docker and docker-compose exercises
