@@ -1,13 +1,13 @@
 version: "3"
 services:
   app:
-    image: flask-by-example:production_v2
+    image: flask-by-example:production
     command: sh -c "/wait && python manage.py runserver --host=0.0.0.0"
     ports:
       - "5000:5000"
     environment:
       APP_SETTINGS: config.ProductionConfig
-      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount_dev
+      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount
       REDISTOGO_URL: redis://redis:6379
       WAIT_HOSTS: db:5432
       WAIT_BEFORE_HOSTS: 20
@@ -15,11 +15,11 @@ services:
       - db
       - redis
   worker:
-    image: flask-by-example:production_v2
+    image: flask-by-example:production
     command: sh -c "/wait && python worker.py"
     environment:
       APP_SETTINGS: config.ProductionConfig
-      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount_dev
+      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount
       REDISTOGO_URL: redis://redis:6379
       WAIT_HOSTS: redis:6379, db:5432
       WAIT_BEFORE_HOSTS: 20
@@ -27,11 +27,11 @@ services:
       - db
       - redis
   migrations:
-    image: flask-by-example:production_v2
+    image: flask-by-example:production
     command: sh -c "/wait && python manage.py db upgrade"
     environment:
       APP_SETTINGS: config.ProductionConfig
-      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount_dev
+      DATABASE_URL: postgresql://wordcount_dbadmin:$DBPASS@db/wordcount
       WAIT_HOSTS: db:5432
       WAIT_BEFORE_HOSTS: 20
     depends_on:
@@ -42,8 +42,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./dbdata:/var/lib/postgresql/data
+      - dbdata:/var/lib/postgresql/data
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+volumes:
+  dbdata:

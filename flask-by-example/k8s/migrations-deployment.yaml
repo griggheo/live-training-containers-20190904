@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-production.yaml
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: migrations
+  name: migrations
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: migrations
+    spec:
+      containers:
+      - args:
+        - sh
+        - -c
+        - /wait && python manage.py db upgrade
+        env:
+        - name: APP_SETTINGS
+          value: config.ProductionConfig
+        - name: DATABASE_URL
+          value: postgresql://wordcount_dbadmin:@db/wordcount_dev
+        - name: WAIT_BEFORE_HOSTS
+          value: "20"
+        - name: WAIT_HOSTS
+          value: db:5432
+        image: griggheo/flask-by-example:production_v2
+        name: migrations
+        resources: {}
+      restartPolicy: Always
+status: {}
