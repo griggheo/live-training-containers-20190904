@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert -f docker-compose-production.yaml
+    kompose.cmd: kompose convert -f docker-compose-production-no-wait.yaml
     kompose.version: 1.16.0 (0c01309)
   creationTimestamp: null
   labels:
@@ -26,10 +26,10 @@ spec:
         resources: {}
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
-          name: db-claim0
+          name: dbdata
       restartPolicy: Always
       volumes:
-      - name: db-claim0
+      - name: dbdata
         persistentVolumeClaim:
-          claimName: db-claim0
+          claimName: dbdata
 status: {}
